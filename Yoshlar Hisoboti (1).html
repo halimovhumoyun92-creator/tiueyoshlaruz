@@ -1,0 +1,394 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Yoshlar Hisoboti</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600;800&display=swap">
+<style>
+/* Layout: single blue world. Sticky glass header, hero with floating 3D cubes, stats row, post grid, photo wall, hidden admin panel. */
+:root {
+  --navy: #031640;
+  --deep: #07307f;
+  --blue: #1558d6;
+  --sky: #38b6ff;
+  --ice: #e8f4ff;
+  --gold: #ffc94a;
+  --gold-edge: #b87c12;
+  --edge: #0a2c78;
+  --font-display: "Unbounded", "Trebuchet MS", sans-serif;
+  --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--navy);
+  color: var(--ice);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 40px;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 50; background: var(--navy);
+}
+.bg { position: fixed; inset: 0; z-index: -1; overflow: hidden;
+  background: radial-gradient(120% 90% at 20% 0%, #0d46b8 0%, var(--deep) 40%, var(--navy) 100%); }
+.bg::after { content: ""; position: absolute; inset: -50%;
+  background-image: linear-gradient(rgba(120,190,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(120,190,255,.08) 1px, transparent 1px);
+  background-size: 54px 54px; transform: perspective(600px) rotateX(62deg) translateY(0); transform-origin: 50% 0; top: 45%;
+  animation: grid 14s linear infinite; }
+@keyframes grid { to { background-position: 0 54px; } }
+.orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; animation: drift 18s ease-in-out infinite alternate; }
+.orb.a { width: 340px; height: 340px; background: #2a7dff; left: -80px; top: 10%; }
+.orb.b { width: 280px; height: 280px; background: #19c2ff; right: -60px; top: 40%; animation-delay: -6s; }
+.orb.c { width: 240px; height: 240px; background: #5a4bff; left: 40%; bottom: -60px; animation-delay: -11s; opacity: .4; }
+@keyframes drift { to { transform: translate(40px, -50px) scale(1.15); } }
+
+.wrap { max-width: 1080px; margin: 0 auto; }
+header.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40;
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  padding: 10px max(16px, env(safe-area-inset-right, 0px)) 14px max(16px, env(safe-area-inset-left, 0px));
+  background: rgba(3,22,64,.72); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(120,190,255,.2);
+}
+.top .wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 200px; }
+.brand img { width: 44px; height: 44px; object-fit: contain; border-radius: 10px; background: rgba(255,255,255,.08); }
+.brand b { font-family: var(--font-display); font-size: 13px; font-weight: 500; letter-spacing: .04em; line-height: 1.25; }
+.top nav { display: flex; gap: 12px; flex-wrap: wrap; padding-top: 6px; }
+
+/* 3D pushable buttons */
+.b3 { position: relative; display: inline-block; border: 0; background: none; padding: 0; margin: 0;
+  cursor: pointer; font: inherit; text-decoration: none; color: inherit;
+  --face: linear-gradient(180deg, #3d8bff, #1558d6); --edge: #0a2c78; --ink: #fff;
+  animation: bob 3.4s ease-in-out infinite; }
+.b3:nth-child(2) { animation-delay: -.8s; } .b3:nth-child(3) { animation-delay: -1.6s; } .b3:nth-child(4) { animation-delay: -2.4s; }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.b3 .sh { position: absolute; inset: 0; border-radius: 14px; background: rgba(0,0,0,.45); filter: blur(5px); transform: translateY(6px); transition: transform .15s; }
+.b3 .ed { position: absolute; inset: 0; border-radius: 14px; background: var(--edge); }
+.b3 .fr { position: relative; display: block; padding: .72em 1.3em; border-radius: 14px; background: var(--face); color: var(--ink);
+  font-weight: 800; font-size: 14px; letter-spacing: .02em; transform: translateY(-6px); transition: transform .15s;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), inset 0 -2px 6px rgba(0,0,0,.15); overflow: hidden; }
+.b3 .fr::after { content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent); transform: skewX(-20deg); animation: shine 4.5s ease-in-out infinite; }
+@keyframes shine { 0%, 60% { left: -60%; } 100% { left: 130%; } }
+.b3:hover .fr { transform: translateY(-9px); } .b3:hover .sh { transform: translateY(9px); }
+.b3:active .fr { transform: translateY(-1px); transition-duration: .05s; } .b3:active .sh { transform: translateY(2px); }
+.b3:focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; border-radius: 16px; }
+.b3.gold { --face: linear-gradient(180deg, #ffe08a, #ffc94a); --edge: var(--gold-edge); --ink: #3a2500; }
+.b3.ghost { --face: linear-gradient(180deg, #1c4aa8, #12357f); --edge: #061b4d; }
+.b3.big .fr { font-size: 16px; padding: .85em 1.7em; }
+.b3.sm .fr { font-size: 13px; padding: .55em 1.05em; }
+
+/* hero */
+.hero { position: relative; padding: 56px 0 40px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; align-items: center; }
+.hero > * { min-width: 0; }
+.eyebrow { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--sky); font-weight: 800; margin: 0 0 14px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(30px, 6vw, 56px); line-height: 1.08; margin: 0 0 16px; text-wrap: balance; }
+h1 span { color: var(--sky); }
+.lead { max-width: 52ch; color: #bcd6f7; margin: 0 0 28px; }
+.cta { display: flex; gap: 20px; flex-wrap: wrap; padding-bottom: 8px; }
+.stage { position: relative; height: 320px; perspective: 900px; display: grid; place-items: center; }
+.logo-big { width: 190px; height: 190px; border-radius: 28px; display: grid; place-items: center;
+  background: linear-gradient(145deg, rgba(255,255,255,.22), rgba(255,255,255,.06)); border: 1px solid rgba(255,255,255,.35);
+  box-shadow: 0 30px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.5);
+  animation: tilt 8s ease-in-out infinite; transform-style: preserve-3d; }
+.logo-big img { width: 78%; height: 78%; object-fit: contain; }
+@keyframes tilt { 0%,100% { transform: rotateY(-16deg) rotateX(6deg); } 50% { transform: rotateY(16deg) rotateX(-4deg); } }
+.cube { position: absolute; width: 56px; height: 56px; transform-style: preserve-3d; animation: spin 14s linear infinite; }
+.cube i { position: absolute; inset: 0; border: 1px solid rgba(160,215,255,.7); background: rgba(56,182,255,.18); }
+.cube i:nth-child(1) { transform: translateZ(28px); } .cube i:nth-child(2) { transform: rotateY(180deg) translateZ(28px); }
+.cube i:nth-child(3) { transform: rotateY(90deg) translateZ(28px); } .cube i:nth-child(4) { transform: rotateY(-90deg) translateZ(28px); }
+.cube i:nth-child(5) { transform: rotateX(90deg) translateZ(28px); } .cube i:nth-child(6) { transform: rotateX(-90deg) translateZ(28px); }
+.cube.c1 { left: 4%; top: 6%; } .cube.c2 { right: 6%; bottom: 8%; width: 38px; height: 38px; animation-duration: 10s; animation-direction: reverse; }
+.cube.c2 i:nth-child(n) { filter: none; }
+@keyframes spin { from { transform: rotateX(20deg) rotateY(0); } to { transform: rotateX(380deg) rotateY(360deg); } }
+
+/* sections */
+section { padding: 28px 0; scroll-margin-top: 90px; }
+h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(20px, 3.4vw, 28px); margin: 0 0 6px; text-wrap: balance; }
+.sub { color: #9fc3f0; margin: 0 0 22px; font-size: 14px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.stat { padding: 18px; border-radius: 18px; background: rgba(255,255,255,.07); border: 1px solid rgba(140,200,255,.22); }
+.stat b { display: block; font-family: var(--font-display); font-size: 34px; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13px; color: #9fc3f0; }
+
+.posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 18px; }
+.post { min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 18px; border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.04)); border: 1px solid rgba(140,200,255,.25);
+  transition: transform .2s, border-color .2s; }
+.post:hover { transform: translateY(-4px); border-color: var(--sky); }
+.meta { display: flex; justify-content: space-between; gap: 8px; align-items: center; font-size: 12px; color: #9fc3f0; }
+.tag { padding: 3px 10px; border-radius: 99px; background: rgba(56,182,255,.2); color: var(--sky); font-weight: 800; }
+.post p { margin: 0; overflow-wrap: anywhere; white-space: pre-line; }
+.shots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+.shots.one { grid-template-columns: 1fr; }
+.shot { aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; border: 0; padding: 0; cursor: zoom-in; background: #0d3a8f; }
+.shot img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+.shot:hover img { transform: scale(1.06); }
+.ph { aspect-ratio: 16 / 9; border-radius: 12px; display: grid; place-items: center; color: #7fb4f5; font-size: 13px;
+  background: repeating-linear-gradient(135deg, rgba(56,182,255,.12) 0 12px, rgba(56,182,255,.05) 12px 24px); border: 1px dashed rgba(140,200,255,.4); }
+.post .acts { display: flex; gap: 12px; flex-wrap: wrap; margin-top: auto; padding-bottom: 6px; }
+.empty { padding: 28px; text-align: center; border: 1px dashed rgba(140,200,255,.4); border-radius: 18px; color: #9fc3f0; }
+
+.wall { columns: 3 220px; column-gap: 10px; }
+.wall button { display: block; width: 100%; margin: 0 0 10px; padding: 0; border: 0; border-radius: 14px; overflow: hidden; cursor: zoom-in; break-inside: avoid; background: #0d3a8f; }
+.wall img { width: 100%; display: block; transition: transform .3s, filter .3s; }
+.wall button:hover img { transform: scale(1.05); filter: brightness(1.1); }
+
+.panel { padding: 22px; border-radius: 22px; background: rgba(2,12,36,.7); border: 1px solid rgba(140,200,255,.3); backdrop-filter: blur(8px); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.grid2 > * { min-width: 0; }
+label { display: block; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #9fc3f0; margin-bottom: 6px; }
+input[type=text], input[type=date], input[type=number], input[type=url], select, textarea {
+  width: 100%; padding: 11px 12px; border-radius: 12px; border: 1px solid rgba(140,200,255,.35); background: rgba(255,255,255,.07);
+  color: #fff; font: inherit; }
+textarea { min-height: 110px; resize: vertical; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+input[type=file] { width: 100%; color: #bcd6f7; font: inherit; font-size: 13px; }
+select option { color: #000; }
+.hint { font-size: 13px; color: #9fc3f0; margin: 0 0 16px; }
+.row { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 18px; padding-bottom: 8px; }
+.note { font-size: 12px; color: #7fa9de; }
+
+.lb { position: fixed; inset: 0; z-index: 100; background: rgba(1,8,26,.92); display: grid; place-items: center; padding: 20px; }
+.lb img { max-width: 100%; max-height: 86vh; border-radius: 14px; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+.lb .x { position: absolute; top: max(14px, env(safe-area-inset-top, 0px)); right: max(14px, env(safe-area-inset-right, 0px)); }
+footer { padding: 30px 0 10px; text-align: center; color: #7fa9de; font-size: 13px; }
+
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; padding-top: 36px; }
+  .stage { height: 250px; order: -1; }
+  .logo-big { width: 150px; height: 150px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+
+<div class="bg" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <img class="logo-img" alt="Universitet logosi">
+      <b>YOSHLAR YETAKCHISI<br>BOSHLANG'ICH TASHKILOT</b>
+    </div>
+    <nav>
+      <a class="b3 sm ghost" href="#postlar"><span class="sh"></span><span class="ed"></span><span class="fr">Postlar</span></a>
+      <a class="b3 sm ghost" href="#rasmlar"><span class="sh"></span><span class="ed"></span><span class="fr">Rasmlar</span></a>
+      <button class="b3 sm gold" id="toggleAdmin" type="button" aria-expanded="false" aria-controls="admin"><span class="sh"></span><span class="ed"></span><span class="fr">Boshqaruv</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Umumiy hisobot · 2026</p>
+      <h1>Yoshlar yetakchisi <span>faoliyati</span> hisoboti</h1>
+      <p class="lead">Boshlang'ich tashkilotimizning Telegram kanalida e'lon qilingan postlar, tadbirlar va rasmlar bir joyda jamlangan.</p>
+      <div class="cta">
+        <a class="b3 big gold" href="#postlar"><span class="sh"></span><span class="ed"></span><span class="fr">Postlarni ko'rish</span></a>
+        <a class="b3 big" id="tgBtn" href="https://t.me/" target="_blank" rel="noopener"><span class="sh"></span><span class="ed"></span><span class="fr">Telegramda ochish</span></a>
+      </div>
+    </div>
+    <div class="stage" aria-hidden="true">
+      <div class="cube c1"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="cube c2"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="logo-big"><img class="logo-img" alt=""></div>
+    </div>
+  </div>
+
+  <section id="korsatkich">
+    <h2>Umumiy ko'rsatkichlar</h2>
+    <p class="sub">Postlar va rasmlar soni avtomatik hisoblanadi. Tadbirlar va ishtirokchilar sonini Boshqaruv bo'limidan kiriting.</p>
+    <div class="stats">
+      <div class="stat"><b id="sPosts">0</b><span>Telegram postlari</span></div>
+      <div class="stat"><b id="sPhotos">0</b><span>Rasmlar</span></div>
+      <div class="stat"><b id="sEvents">0</b><span>O'tkazilgan tadbirlar</span></div>
+      <div class="stat"><b id="sPeople">0</b><span>Ishtirokchi yoshlar</span></div>
+    </div>
+  </section>
+
+  <section id="postlar">
+    <h2>Telegram postlari</h2>
+    <p class="sub">Eng yangi post birinchi turadi. "Namuna" belgisi qo'yilgan postlar o'rnini o'zingizning postlaringiz egallaydi.</p>
+    <div class="posts" id="posts"></div>
+  </section>
+
+  <section id="rasmlar">
+    <h2>Rasmlar galereyasi</h2>
+    <p class="sub">Rasmni bosing, to'liq o'lchamda ochiladi.</p>
+    <div class="wall" id="wall"></div>
+  </section>
+
+  <section id="admin" hidden>
+    <h2>Boshqaruv</h2>
+    <p class="hint">Telegramdagi postni shu yerga ko'chirasiz: matnni nusxalab, rasmni yuklab olib qo'shasiz. Qo'shilgan ma'lumot shu brauzerda saqlanadi. Hamma tashrifchiga ko'rinishi uchun postlarni menga yuboring, saytga doimiy joylayman.</p>
+    <div class="panel">
+      <form id="postForm">
+        <div class="grid2">
+          <div><label for="fDate">Sana</label><input type="date" id="fDate"></div>
+          <div><label for="fTag">Turkum</label>
+            <select id="fTag"><option>Tadbir</option><option>E'lon</option><option>Yutuq</option><option>Uchrashuv</option></select></div>
+        </div>
+        <div style="margin-top:14px"><label for="fText">Post matni</label><textarea id="fText" placeholder="Telegramdagi post matnini shu yerga joylang"></textarea></div>
+        <div class="grid2" style="margin-top:14px">
+          <div><label for="fImgs">Rasmlar (bir nechta tanlash mumkin)</label><input type="file" id="fImgs" accept="image/*" multiple></div>
+          <div><label for="fUrl">Telegramdagi post havolasi (ixtiyoriy)</label><input type="url" id="fUrl" placeholder="https://t.me/kanal/123"></div>
+        </div>
+        <div class="row">
+          <button class="b3 gold" type="submit"><span class="sh"></span><span class="ed"></span><span class="fr">Postni qo'shish</span></button>
+        </div>
+      </form>
+    </div>
+    <div class="panel" style="margin-top:18px">
+      <div class="grid2">
+        <div><label for="fLogo">Universitet logosi</label><input type="file" id="fLogo" accept="image/*"></div>
+        <div><label for="fTg">Telegram kanal havolasi</label><input type="url" id="fTg" placeholder="https://t.me/kanal_nomi"></div>
+        <div><label for="fEv">Tadbirlar soni</label><input type="number" id="fEv" min="0"></div>
+        <div><label for="fPe">Ishtirokchilar soni</label><input type="number" id="fPe" min="0"></div>
+      </div>
+      <div class="row">
+        <button class="b3" id="saveSettings" type="button"><span class="sh"></span><span class="ed"></span><span class="fr">Sozlamalarni saqlash</span></button>
+        <button class="b3 ghost" id="resetAll" type="button"><span class="sh"></span><span class="ed"></span><span class="fr" id="resetLabel">Qo'shilganlarni tozalash</span></button>
+      </div>
+      <p class="note" id="status" role="status"></p>
+    </div>
+  </section>
+</main>
+
+<footer>Yoshlar yetakchisi · Boshlang'ich tashkilot hisoboti</footer>
+
+<div class="lb" id="lb" hidden>
+  <button class="b3 sm x" id="lbClose" type="button" aria-label="Yopish"><span class="sh"></span><span class="ed"></span><span class="fr">Yopish</span></button>
+  <img id="lbImg" alt="">
+</div>
+
+<script>
+(function () {
+  var KEY = "yoshlar_hisobot_v1";
+  var DEFAULT_LOGO = "data:image/svg+xml;utf8," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><path d="M60 8 L108 26 V60 C108 86 88 105 60 114 C32 105 12 86 12 60 V26 Z" fill="#1558d6" stroke="#9fd4ff" stroke-width="4"/><path d="M60 30 L88 44 L60 58 L32 44 Z" fill="#fff"/><path d="M42 54 V70 C42 76 50 82 60 82 C70 82 78 76 78 70 V54 L60 63 Z" fill="#fff"/><text x="60" y="104" text-anchor="middle" font-family="Arial" font-weight="700" font-size="11" fill="#cfe9ff">LOGO</text></svg>');
+  var DEFAULT_POSTS = [
+    { id: "d1", date: "2026-10-28", tag: "Tadbir", text: "Namuna post: yoshlar bilan ochiq muloqot uchrashuvi o'tkazildi. Talabalarning takliflari tinglandi va keyingi chorak rejasiga kiritildi.", imgs: [], url: "", sample: true },
+    { id: "d2", date: "2026-10-15", tag: "E'lon", text: "Namuna post: yangi o'quv yili uchun yoshlar tashabbuslari ro'yxatga olish boshlandi.", imgs: [], url: "", sample: true },
+    { id: "d3", date: "2026-10-03", tag: "Yutuq", text: "Namuna post: tashkilot a'zolari universitet miqyosidagi tanlovda sovrinli o'rinni egalladi.", imgs: [], url: "", sample: true }
+  ];
+  var state = { posts: [], logo: "", tg: "", events: 12, people: 340 };
+
+  function $(id) { return document.getElementById(id); }
+  function load() {
+    try { var s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s) { state.posts = s.posts || []; state.logo = s.logo || ""; state.tg = s.tg || ""; if (s.events != null) state.events = s.events; if (s.people != null) state.people = s.people; } } catch (e) {}
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); return true; }
+    catch (e) { say("Saqlab bo'lmadi: brauzer xotirasi to'ldi yoki yopiq. Kamroq rasm tanlang."); return false; }
+  }
+  function say(t) { $("status").textContent = t; }
+  function fmt(d) {
+    try { return new Date(d + "T00:00:00").toLocaleDateString("uz-UZ", { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return d; }
+  }
+  function allPosts() {
+    var mine = state.posts.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    return mine.length ? mine : DEFAULT_POSTS;
+  }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function btn(label, cls, href) {
+    var n = el(href ? "a" : "button", "b3 sm " + (cls || ""));
+    if (href) { n.href = href; n.target = "_blank"; n.rel = "noopener"; } else n.type = "button";
+    n.appendChild(el("span", "sh")); n.appendChild(el("span", "ed")); n.appendChild(el("span", "fr", label));
+    return n;
+  }
+  function openLb(src) { $("lbImg").src = src; $("lb").hidden = false; }
+
+  function render() {
+    var logo = state.logo || DEFAULT_LOGO;
+    document.querySelectorAll(".logo-img").forEach(function (i) { i.src = logo; });
+    $("tgBtn").href = state.tg || "https://t.me/";
+    var posts = allPosts(), box = $("posts"); box.textContent = "";
+    var photos = [];
+    posts.forEach(function (p) {
+      var c = el("article", "post");
+      var m = el("div", "meta"); m.appendChild(el("span", "tag", p.tag + (p.sample ? " · namuna" : ""))); m.appendChild(el("span", "", fmt(p.date))); c.appendChild(m);
+      if (p.imgs && p.imgs.length) {
+        var g = el("div", "shots" + (p.imgs.length === 1 ? " one" : ""));
+        p.imgs.slice(0, 4).forEach(function (src) { var b = el("button", "shot"); b.type = "button"; b.setAttribute("aria-label", "Rasmni kattalashtirish"); var im = new Image(); im.src = src; im.alt = ""; b.appendChild(im); b.onclick = function () { openLb(src); }; g.appendChild(b); });
+        c.appendChild(g); p.imgs.forEach(function (s) { photos.push(s); });
+      } else if (p.sample) { c.appendChild(el("div", "ph", "Rasm o'rni")); }
+      c.appendChild(el("p", "", p.text));
+      var acts = el("div", "acts");
+      if (p.url) acts.appendChild(btn("Telegramda ko'rish", "", p.url));
+      if (!p.sample) { var d = btn("O'chirish", "ghost"); d.onclick = function () { state.posts = state.posts.filter(function (x) { return x.id !== p.id; }); save(); render(); }; acts.appendChild(d); }
+      if (acts.children.length) c.appendChild(acts);
+      box.appendChild(c);
+    });
+    var wall = $("wall"); wall.textContent = "";
+    if (!photos.length) { wall.style.columns = "1"; wall.appendChild(el("div", "empty", "Hali rasm yo'q. Boshqaruv bo'limida post bilan birga rasm yuklang.")); }
+    else { wall.style.columns = ""; photos.forEach(function (src) { var b = el("button"); b.type = "button"; var im = new Image(); im.src = src; im.alt = "Hisobot rasmi"; b.appendChild(im); b.onclick = function () { openLb(src); }; wall.appendChild(b); }); }
+    $("sPosts").textContent = state.posts.length;
+    $("sPhotos").textContent = photos.length;
+    $("sEvents").textContent = state.events; $("sPeople").textContent = state.people;
+  }
+
+  function shrink(file, max, cb) {
+    var r = new FileReader();
+    r.onload = function () {
+      var im = new Image();
+      im.onload = function () {
+        var k = Math.min(1, max / Math.max(im.width, im.height)), cv = document.createElement("canvas");
+        cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
+        cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+        cb(cv.toDataURL(file.type === "image/png" && max <= 400 ? "image/png" : "image/jpeg", .78));
+      };
+      im.onerror = function () { cb(null); };
+      im.src = r.result;
+    };
+    r.onerror = function () { cb(null); };
+    r.readAsDataURL(file);
+  }
+
+  $("toggleAdmin").onclick = function () {
+    var a = $("admin"); a.hidden = !a.hidden; this.setAttribute("aria-expanded", String(!a.hidden));
+    if (!a.hidden) { $("fTg").value = state.tg; $("fEv").value = state.events; $("fPe").value = state.people; $("fDate").value = $("fDate").value || new Date().toISOString().slice(0, 10); a.scrollIntoView({ behavior: "smooth" }); }
+  };
+  $("postForm").onsubmit = function (e) {
+    e.preventDefault();
+    var text = $("fText").value.trim(); if (!text) { say("Post matnini kiriting."); return; }
+    var files = Array.prototype.slice.call($("fImgs").files), imgs = [], left = files.length;
+    function done() {
+      state.posts.push({ id: "p" + Date.now(), date: $("fDate").value || new Date().toISOString().slice(0, 10), tag: $("fTag").value, text: text, imgs: imgs, url: $("fUrl").value.trim() });
+      if (save()) { say("Post qo'shildi."); $("postForm").reset(); $("fDate").value = new Date().toISOString().slice(0, 10); }
+      else state.posts.pop();
+      render();
+    }
+    if (!left) return done();
+    files.forEach(function (f) { shrink(f, 1000, function (u) { if (u) imgs.push(u); if (--left === 0) done(); }); });
+  };
+  $("saveSettings").onclick = function () {
+    state.tg = $("fTg").value.trim(); state.events = Number($("fEv").value) || 0; state.people = Number($("fPe").value) || 0;
+    var f = $("fLogo").files[0];
+    function fin() { if (save()) say("Sozlamalar saqlandi."); render(); }
+    if (f) shrink(f, 400, function (u) { if (u) state.logo = u; fin(); }); else fin();
+  };
+  var armed = false;
+  $("resetAll").onclick = function () {
+    if (!armed) { armed = true; $("resetLabel").textContent = "Aniq tozalansinmi? Yana bosing"; setTimeout(function () { armed = false; $("resetLabel").textContent = "Qo'shilganlarni tozalash"; }, 4000); return; }
+    state.posts = []; state.logo = ""; save(); armed = false; $("resetLabel").textContent = "Qo'shilganlarni tozalash"; say("Qo'shilgan postlar va logo tozalandi."); render();
+  };
+  $("lbClose").onclick = function () { $("lb").hidden = true; };
+  $("lb").onclick = function (e) { if (e.target === this) this.hidden = true; };
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") $("lb").hidden = true; });
+
+  load(); render();
+})();
+</script>
+
+</body></html>
